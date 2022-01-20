@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
 
-class NewTransaction extends StatelessWidget {
+class NewTransaction extends StatefulWidget {
+  final Function addTx;
+
+  NewTransaction(this.addTx);
+
+  @override
+  State<NewTransaction> createState() => _NewTransactionState();
+}
+
+class _NewTransactionState extends State<NewTransaction> {
   final titleController = TextEditingController();
+
   final amountController = TextEditingController();
+
+  void submitData() {
+    final enteredTitle = titleController.text;
+    final enteredAmount = double.parse(amountController.text);
+
+    if (enteredTitle.isEmpty || enteredAmount <= 0) {
+      return;
+    }
+
+    widget.addTx(enteredTitle, enteredAmount);
+
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +36,7 @@ class NewTransaction extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             TextField(
+              onSubmitted: (_) => submitData(),
               controller: titleController,
               decoration: InputDecoration(labelText: 'Title'),
               // onChanged: (value) {
@@ -20,6 +44,8 @@ class NewTransaction extends StatelessWidget {
               // },
             ),
             TextField(
+              onSubmitted: (_) => submitData(),
+              keyboardType: TextInputType.number,
               controller: amountController,
               decoration: InputDecoration(
                 labelText: 'Amount',
@@ -30,14 +56,18 @@ class NewTransaction extends StatelessWidget {
             ),
             OutlineButton(
               child: Text('Add Transaction'),
-              onPressed: () {
-                // print(titleInput);
-                // print(amountInput);
-                print(titleController.text);
-                print(amountController.text);
-              },
-              color: Colors.red,
-              textColor: Colors.red,
+              onPressed: submitData,
+
+              // print(titleInput);
+              // print(amountInput);
+
+              //Second way static
+
+              // print(titleController.text);
+              // print(amountController.text);
+
+              color: Colors.teal.shade200,
+              textColor: Colors.teal.shade200,
             )
           ],
         ),
